@@ -58,3 +58,12 @@ export type ContactSubmission = {
   message: string;
   submitted_at: string;
 };
+
+export type HomepageSettings = {
+  id: string;
+  projects_cover_url: string | null;
+  achievements_cover_url: string | null;
+  about_cover_url: string | null;
+  experience_cover_url: string | null;
+  updated_at: string;
+};
