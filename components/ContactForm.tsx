@@ -37,7 +37,7 @@ export function ContactForm() {
         onChange={(e) => setValues({ ...values, name: e.target.value })}
         className="rounded-lg border border-beige bg-cream px-4 py-2"
       />
-      {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
+      {errors.name && <p className="text-sm text-error">{errors.name}</p>}
 
       <input
         placeholder="Email"
@@ -45,7 +45,7 @@ export function ContactForm() {
         onChange={(e) => setValues({ ...values, email: e.target.value })}
         className="rounded-lg border border-beige bg-cream px-4 py-2"
       />
-      {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
+      {errors.email && <p className="text-sm text-error">{errors.email}</p>}
 
       <textarea
         placeholder="Message"
@@ -54,7 +54,7 @@ export function ContactForm() {
         onChange={(e) => setValues({ ...values, message: e.target.value })}
         className="rounded-lg border border-beige bg-cream px-4 py-2"
       />
-      {errors.message && <p className="text-sm text-red-600">{errors.message}</p>}
+      {errors.message && <p className="text-sm text-error">{errors.message}</p>}
 
       <button
         type="submit"

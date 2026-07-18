@@ -46,7 +46,7 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           className="rounded-lg border border-beige bg-cream px-4 py-2"
         />
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-error">{error}</p>}
         <button
           type="submit"
           disabled={loading}
