@@ -4,7 +4,7 @@
 
 **Goal:** Stand up the Next.js + Supabase portfolio site end-to-end — design system, auth-protected admin, and a fully working Projects feature (public pages + admin CRUD with gallery and custom sections) — deployed live on Vercel.
 
-**Architecture:** Next.js App Router (TypeScript) hosted on Vercel, with Supabase providing Postgres (content), Auth (single admin user), and Storage (media). Public pages are server-rendered reads from Postgres; the admin dashboard is a client app behind `/admin`, protected by middleware, doing CRUD via the Supabase browser client (RLS enforces write access). Achievements, Experience, and About get placeholder pages in this plan and full CRUD in a follow-up plan, reusing the generic admin components built here.
+**Architecture:** Next.js App Router (TypeScript) hosted on Vercel, with Supabase providing Postgres (content), Auth (single admin user), and Storage (media). Public pages are server-rendered reads from Postgres; the admin dashboard is a client app behind `/admin`, protected by a Next.js proxy (formerly "middleware"), doing CRUD via the Supabase browser client (RLS enforces write access). Achievements, Experience, and About get placeholder pages in this plan and full CRUD in a follow-up plan, reusing the generic admin components built here.
 
 **Tech Stack:** Next.js 15 (App Router) + TypeScript, Tailwind CSS v4, Supabase (`@supabase/supabase-js`, `@supabase/ssr`), `@dnd-kit` (drag-to-reorder), Framer Motion (hero animation), Resend (contact email), Vitest + Testing Library (unit tests).
 
@@ -349,7 +349,7 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             );
           } catch {
-            // Called from a Server Component render; middleware refreshes the session instead.
+            // Called from a Server Component render; proxy.ts refreshes the session instead.
           }
         },
       },
@@ -677,13 +677,15 @@ git commit -m "Add slug generation utility"
 
 ---
 
-### Task 7: Admin auth (login, middleware, logout)
+### Task 7: Admin auth (login, proxy guard, logout)
+
+**Note:** this project scaffolded on Next.js 16, where the `middleware.ts` file convention is deprecated in favor of `proxy.ts` (same API — `NextRequest`/`NextResponse`, cookies, `matcher` config — just the file name and exported function are renamed from `middleware` to `proxy`). Use `proxy.ts`, not `middleware.ts`.
 
 **Files:**
 - Create: `app/admin/login/page.tsx`
 - Create: `app/admin/(dashboard)/layout.tsx`
 - Create: `app/admin/(dashboard)/page.tsx`
-- Create: `middleware.ts`
+- Create: `proxy.ts`
 
 **Interfaces:**
 - Consumes: `createClient()` from `lib/supabase/client.ts` (Task 4).
@@ -813,15 +815,15 @@ export default function AdminHome() {
 }
 ```
 
-- [ ] **Step 4: Create the auth-guard middleware**
+- [ ] **Step 4: Create the auth-guard proxy**
 
-`middleware.ts` (repo root):
+`proxy.ts` (repo root):
 
 ```ts
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -880,7 +882,7 @@ Expected: `307` (redirect to login) since no session exists yet. Then open `http
 
 ```bash
 git add -A
-git commit -m "Add admin auth: login page, middleware guard, dashboard shell"
+git commit -m "Add admin auth: login page, proxy guard, dashboard shell"
 ```
 
 ---
