@@ -30,7 +30,11 @@ export async function POST(request: Request) {
     );
   }
 
-  await sendContactEmail(input);
+  try {
+    await sendContactEmail(input);
+  } catch (emailError) {
+    console.error("Failed to send contact notification email:", emailError);
+  }
 
   return NextResponse.json({ success: true });
 }

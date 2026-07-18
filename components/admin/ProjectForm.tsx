@@ -27,59 +27,81 @@ export function ProjectForm({ initialData }: { initialData?: ProjectFormInitialD
   const [galleryUrls, setGalleryUrls] = useState<string[]>(initialData?.galleryUrls ?? []);
   const [sections, setSections] = useState<SectionDraft[]>(initialData?.sections ?? []);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSave() {
     setSaving(true);
+    setError(null);
     const supabase = createClient();
 
-    let projectId = initialData?.id;
+    try {
+      let projectId = initialData?.id;
 
-    if (projectId) {
-      await updateRecord<Project>("projects", projectId, {
-        title,
-        description,
-        cover_photo_url: coverPhotoUrl,
-      });
-      await supabase.from("project_gallery_items").delete().eq("project_id", projectId);
-      await supabase.from("project_sections").delete().eq("project_id", projectId);
-    } else {
-      const existing = await listOrdered<Project>("projects");
-      const slug = uniqueSlug(slugify(title), existing.map((p) => p.slug));
-      const created = await createRecord<Record<string, unknown>>("projects", {
-        title,
-        slug,
-        description,
-        cover_photo_url: coverPhotoUrl,
-        position: existing.length,
-      });
-      projectId = created.id as string;
-    }
+      if (projectId) {
+        await updateRecord<Project>("projects", projectId, {
+          title,
+          description,
+          cover_photo_url: coverPhotoUrl,
+        });
 
-    if (galleryUrls.length > 0) {
-      await supabase.from("project_gallery_items").insert(
-        galleryUrls.map((url, i) => ({
-          project_id: projectId,
-          media_url: url,
-          media_type: url.match(/\.(mp4|mov|webm)$/i) ? "video" : "image",
-          position: i,
-        }))
+        const { error: deleteGalleryError } = await supabase
+          .from("project_gallery_items")
+          .delete()
+          .eq("project_id", projectId);
+        if (deleteGalleryError) throw deleteGalleryError;
+
+        const { error: deleteSectionsError } = await supabase
+          .from("project_sections")
+          .delete()
+          .eq("project_id", projectId);
+        if (deleteSectionsError) throw deleteSectionsError;
+      } else {
+        const existing = await listOrdered<Project>("projects");
+        const slug = uniqueSlug(slugify(title), existing.map((p) => p.slug));
+        const created = await createRecord<Record<string, unknown>>("projects", {
+          title,
+          slug,
+          description,
+          cover_photo_url: coverPhotoUrl,
+          position: existing.length,
+        });
+        projectId = created.id as string;
+      }
+
+      if (galleryUrls.length > 0) {
+        const { error: insertGalleryError } = await supabase.from("project_gallery_items").insert(
+          galleryUrls.map((url, i) => ({
+            project_id: projectId,
+            media_url: url,
+            media_type: url.match(/\.(mp4|mov|webm)$/i) ? "video" : "image",
+            position: i,
+          }))
+        );
+        if (insertGalleryError) throw insertGalleryError;
+      }
+
+      if (sections.length > 0) {
+        const { error: insertSectionsError } = await supabase.from("project_sections").insert(
+          sections.map((s, i) => ({
+            project_id: projectId,
+            title: s.title,
+            description: s.description,
+            position: i,
+          }))
+        );
+        if (insertSectionsError) throw insertSectionsError;
+      }
+
+      router.push("/admin/projects");
+      router.refresh();
+    } catch (err) {
+      console.error("Failed to save project:", err);
+      setError(
+        "Something went wrong while saving this project. Some data (gallery or sections) may not have been saved correctly. Please try again or contact the site owner."
       );
+    } finally {
+      setSaving(false);
     }
-
-    if (sections.length > 0) {
-      await supabase.from("project_sections").insert(
-        sections.map((s, i) => ({
-          project_id: projectId,
-          title: s.title,
-          description: s.description,
-          position: i,
-        }))
-      );
-    }
-
-    setSaving(false);
-    router.push("/admin/projects");
-    router.refresh();
   }
 
   return (
@@ -122,6 +144,8 @@ export function ProjectForm({ initialData }: { initialData?: ProjectFormInitialD
         <p className="mb-2 text-sm font-medium text-brown-600">Sections</p>
         <SectionsRepeater sections={sections} onChange={setSections} />
       </div>
+
+      {error && <p className="text-sm text-error">{error}</p>}
 
       <button
         onClick={handleSave}

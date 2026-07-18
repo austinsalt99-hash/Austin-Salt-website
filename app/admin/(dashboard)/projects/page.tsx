@@ -9,6 +9,7 @@ import type { Project } from "@/lib/types";
 export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     listOrdered<Project>("projects").then((data) => {
@@ -17,14 +18,33 @@ export default function AdminProjectsPage() {
     });
   }, []);
 
+  async function refetchProjects() {
+    const data = await listOrdered<Project>("projects");
+    setProjects(data);
+  }
+
   async function handleDelete(id: string) {
     if (!confirm("Delete this project? This can't be undone.")) return;
-    await deleteRecord("projects", id);
-    setProjects((prev) => prev.filter((p) => p.id !== id));
+    setError(null);
+    try {
+      await deleteRecord("projects", id);
+      setProjects((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      console.error("Failed to delete project:", err);
+      setError("Failed to delete this project. Please try again.");
+      await refetchProjects();
+    }
   }
 
   async function handleReorder(orderedIds: string[]) {
-    await reorder("projects", orderedIds);
+    setError(null);
+    try {
+      await reorder("projects", orderedIds);
+    } catch (err) {
+      console.error("Failed to reorder projects:", err);
+      setError("Failed to save the new project order. Please try again.");
+      await refetchProjects();
+    }
   }
 
   if (loading) return <p className="text-brown-600">Loading…</p>;
@@ -37,6 +57,8 @@ export default function AdminProjectsPage() {
           New Project
         </Link>
       </div>
+
+      {error && <p className="text-sm text-error">{error}</p>}
 
       {projects.length === 0 ? (
         <p className="text-brown-600">No projects yet.</p>
