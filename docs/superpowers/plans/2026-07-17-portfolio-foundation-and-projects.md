@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Palette (confirmed against a live design preview): cream `#F6F2E7`, beige `#EAE0CC`, brown ink `#33271C`, soft brown `#7C6A54`, gray/border `#A79C8A`, accent `#DD6B20`. Dark-mode variants swap these under `prefers-color-scheme`. No green. (Design spec §5)
+- Palette (confirmed against a live design preview): cream `#F6F2E7`, beige `#EAE0CC`, brown ink `#33271C`, soft brown `#7C6A54`, gray/border `#A79C8A`, accent `#DD6B20`, plus a semantic error/danger token `#B3432B` for validation messages and destructive actions (not part of the brand palette proper, but the only sanctioned red — never use Tailwind default colors like `red-600`). Dark-mode variants swap these under `prefers-color-scheme`. No green. (Design spec §5)
 - Typography: Inter only — hierarchy from weight/spacing (extrabold display, regular body, uppercase tracked labels), no second typeface, no literal engineering graphic motifs. (Design spec §5)
 - Hero photo treatment: bottom edge fades into the cream background via a CSS `mask-image` gradient (confirmed choice B of 3 previewed options). (Design spec §5)
 - Single admin user, no public sign-up. (Design spec §4)
@@ -123,7 +123,7 @@ git commit -m "Scaffold Next.js app with Tailwind, Supabase, and Vitest"
 
 **Interfaces:**
 - Consumes: nothing new.
-- Produces: Tailwind theme colors `cream`, `beige`, `brown-900`, `brown-600`, `stone-500`, `accent`, and font variable `--font-inter`, available to every later task's markup.
+- Produces: Tailwind theme colors `cream`, `beige`, `brown-900`, `brown-600`, `stone-500`, `accent`, `error`, and font variable `--font-inter`, available to every later task's markup. `error` (`text-error`) is the only sanctioned color for validation/error messages and destructive actions — never use Tailwind default colors like `text-red-600`.
 
 - [ ] **Step 1: Define the theme in `app/globals.css`**
 
@@ -139,6 +139,7 @@ Replace the file contents with:
   --color-brown-600: #7c6a54;
   --color-stone-500: #a79c8a;
   --color-accent: #dd6b20;
+  --color-error: #b3432b;
   --font-sans: var(--font-inter);
 }
 
@@ -150,6 +151,7 @@ Replace the file contents with:
     --color-brown-600: #c9b8a0;
     --color-stone-500: #4d4032;
     --color-accent: #e8802e;
+    --color-error: #d9694e;
   }
 }
 
@@ -744,7 +746,7 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           className="rounded-lg border border-beige bg-cream px-4 py-2"
         />
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-error">{error}</p>}
         <button
           type="submit"
           disabled={loading}
@@ -1107,7 +1109,7 @@ export function ContactForm() {
         onChange={(e) => setValues({ ...values, name: e.target.value })}
         className="rounded-lg border border-beige bg-cream px-4 py-2"
       />
-      {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
+      {errors.name && <p className="text-sm text-error">{errors.name}</p>}
 
       <input
         placeholder="Email"
@@ -1115,7 +1117,7 @@ export function ContactForm() {
         onChange={(e) => setValues({ ...values, email: e.target.value })}
         className="rounded-lg border border-beige bg-cream px-4 py-2"
       />
-      {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
+      {errors.email && <p className="text-sm text-error">{errors.email}</p>}
 
       <textarea
         placeholder="Message"
@@ -1124,7 +1126,7 @@ export function ContactForm() {
         onChange={(e) => setValues({ ...values, message: e.target.value })}
         className="rounded-lg border border-beige bg-cream px-4 py-2"
       />
-      {errors.message && <p className="text-sm text-red-600">{errors.message}</p>}
+      {errors.message && <p className="text-sm text-error">{errors.message}</p>}
 
       <button
         type="submit"
@@ -1541,7 +1543,7 @@ export function ImageUploader({
           onChange={(e) => handleFiles(e.target.files)}
         />
       </label>
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-sm text-error">{error}</p>}
     </div>
   );
 }
@@ -1777,7 +1779,7 @@ export default function AdminProjectsPage() {
                 <Link href={`/admin/projects/${project.id}/edit`} className="text-accent underline">
                   Edit
                 </Link>
-                <button onClick={() => handleDelete(project.id)} className="text-red-600 underline">
+                <button onClick={() => handleDelete(project.id)} className="text-error underline">
                   Delete
                 </button>
               </div>
@@ -1959,7 +1961,7 @@ export function SectionsRepeater({
             <button type="button" disabled={i === sections.length - 1} onClick={() => onChange(moveSection(sections, section.id, "down"))} className="disabled:opacity-30">
               Move down
             </button>
-            <button type="button" onClick={() => onChange(removeSection(sections, section.id))} className="text-red-600">
+            <button type="button" onClick={() => onChange(removeSection(sections, section.id))} className="text-error">
               Remove
             </button>
           </div>
