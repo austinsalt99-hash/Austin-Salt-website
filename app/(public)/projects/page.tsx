@@ -18,7 +18,7 @@ export default async function ProjectsPage() {
       ) : (
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard key={project.id} project={project} linkHref={`/projects/${project.slug}`} />
           ))}
         </div>
       )}

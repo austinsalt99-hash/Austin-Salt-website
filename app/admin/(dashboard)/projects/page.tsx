@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { listOrdered, deleteRecord, reorder } from "@/lib/data/collections";
 import { SortableList } from "@/components/admin/SortableList";
+import { EntryControls } from "@/components/admin/EntryControls";
+import { ProjectCard } from "@/components/ProjectCard";
 import type { Project } from "@/lib/types";
 
 export default function AdminProjectsPage() {
@@ -66,18 +68,18 @@ export default function AdminProjectsPage() {
         <SortableList
           items={projects}
           onReorder={handleReorder}
-          renderItem={(project) => (
-            <div className="flex items-center justify-between">
-              <span className="text-brown-900">{project.title}</span>
-              <div className="flex gap-3 text-sm">
-                <Link href={`/admin/projects/${project.id}/edit`} className="text-accent underline">
-                  Edit
-                </Link>
-                <button onClick={() => handleDelete(project.id)} className="text-error underline">
-                  Delete
-                </button>
-              </div>
-            </div>
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          renderItem={(project, dragHandle) => (
+            <ProjectCard
+              project={project}
+              adminControls={
+                <EntryControls
+                  editHref={`/admin/projects/${project.id}/edit`}
+                  onDelete={() => handleDelete(project.id)}
+                  dragHandle={dragHandle}
+                />
+              }
+            />
           )}
         />
       )}
