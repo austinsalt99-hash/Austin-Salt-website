@@ -17,10 +17,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div>
       <header className="flex items-center justify-between border-b border-beige px-6 py-4">
-        <nav className="flex gap-4 text-sm">
-          <Link href="/admin" className="text-brown-900">Dashboard</Link>
-          <Link href="/admin/projects" className="text-brown-600">Projects</Link>
-        </nav>
+        <Link href="/admin" className="text-sm font-semibold text-brown-900">
+          Dashboard
+        </Link>
         <button onClick={handleLogout} className="text-sm text-brown-600 underline">
           Log out
         </button>
