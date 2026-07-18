@@ -1,9 +1,16 @@
+import { Hero } from "@/components/Hero";
+import { SectionTile } from "@/components/SectionTile";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <h1 className="text-4xl font-semibold text-brown-900">Austin Salt</h1>
-      <p className="text-brown-600">Mechanical Engineering Student</p>
-      <span className="rounded-full bg-accent px-4 py-1 text-sm text-cream">accent</span>
+    <main>
+      <Hero />
+      <section className="mx-auto grid max-w-4xl grid-cols-1 gap-4 px-6 pb-20 sm:grid-cols-2">
+        <SectionTile href="/projects" label="Projects" />
+        <SectionTile href="/achievements" label="Achievements" />
+        <SectionTile href="/about" label="About" />
+        <SectionTile href="/experience" label="Experience" />
+      </section>
     </main>
   );
 }
