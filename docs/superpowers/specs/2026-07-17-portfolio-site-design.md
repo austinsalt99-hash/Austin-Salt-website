@@ -48,10 +48,10 @@ There is no draft/unpublished state in this version — content goes live as soo
 
 ## 5. Visual Design Direction
 
-- **Palette:** warm neutrals — cream (not white) as the base, plus beige, gray, and brown, with a pop of orange as an accent color (buttons, links, highlights). No green.
-- **Typography:** clean modern sans-serif throughout (e.g. Inter or similar). No literal engineering graphic motifs (no blueprint lines, wireframes, or industrial textures) — the palette and typography carry the tone on their own.
+- **Palette (confirmed against a live preview):** cream `#F6F2E7` base, beige `#EAE0CC` surfaces, brown `#33271C` primary text/ink, soft brown `#7C6A54` secondary text, gray `#A79C8A` borders/muted, accent rust-orange `#DD6B20`. Dark-mode equivalents defined as CSS custom properties (swap under `prefers-color-scheme`/`data-theme`). No green. Easy to retune later since it's just the CSS variable values.
+- **Typography:** Inter only, throughout — hierarchy comes from weight and spacing (extrabold display/headings, regular body, uppercase tracked labels) rather than mixing typefaces. No literal engineering graphic motifs (no blueprint lines, wireframes, or industrial textures) — the palette and typography carry the tone on their own.
 - **Hero (`/`):** minimal — Austin's name, with a photo of him blended into the hero composition, followed by 4 large tiles below, one per section (Projects, Achievements, About, Experience), each using a cover photo for that section.
-  - Hero photo source: `assets/hero/austin-original.jpg`, with background already removed via `rembg` at `assets/hero/austin-hero-nobg.png` (transparent PNG). Exact blend treatment (drop shadow, gradient fade into the cream background, subtle color grade, etc.) to be finalized during implementation.
+  - Hero photo source: `assets/hero/austin-original.jpg`, with background already removed via `rembg` at `assets/hero/austin-hero-nobg.png` (transparent PNG). Treatment: bottom edge fades into the cream background via a CSS mask gradient (confirmed against a live preview).
   - Note: the current source photo is a casual outdoor shot (ballcap, branded t-shirt) — worth a final gut-check on tone before implementation, or swapping for a different photo later; the background-removal pipeline works the same either way.
   - Tiles are the primary navigation on the homepage — no separate nav-link list competing with them.
   - Subtle interactions: a gentle zoom on tile hover, and a subtle fade/slide-in on page load. Subtle intro text animation on the name/hero text.
