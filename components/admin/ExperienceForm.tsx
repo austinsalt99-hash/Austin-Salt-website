@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createRecord, updateRecord, listOrdered } from "@/lib/data/collections";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { MediaPreview } from "@/components/admin/MediaPreview";
 import type { ExperienceEntry } from "@/lib/types";
 
 export type ExperienceFormInitialData = {
@@ -87,7 +88,11 @@ export function ExperienceForm({ initialData }: { initialData?: ExperienceFormIn
       />
       <div>
         <p className="mb-2 text-sm font-medium text-brown-600">Image</p>
-        {imageUrl && <img src={imageUrl} alt="" className="mb-2 h-32 w-auto rounded-lg object-cover" />}
+        {imageUrl && (
+          <div className="mb-2">
+            <MediaPreview src={imageUrl} onRemove={() => setImageUrl("")} />
+          </div>
+        )}
         <ImageUploader path="experience" label="Drop an image here" onUploaded={setImageUrl} />
       </div>
       {error && <p className="text-sm text-error">{error}</p>}

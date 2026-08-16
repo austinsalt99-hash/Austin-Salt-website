@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { updateRecord } from "@/lib/data/collections";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { MediaPreview } from "@/components/admin/MediaPreview";
 import type { About } from "@/lib/types";
 
 export function AboutForm({ about }: { about: About }) {
@@ -39,7 +40,15 @@ export function AboutForm({ about }: { about: About }) {
       />
       <div>
         <p className="mb-2 text-sm font-medium text-brown-600">Photo</p>
-        {photoUrl && <img src={photoUrl} alt="" className="mb-2 h-32 w-32 rounded-full object-cover" />}
+        {photoUrl && (
+          <div className="mb-2">
+            <MediaPreview
+              src={photoUrl}
+              onRemove={() => setPhotoUrl("")}
+              imgClassName="h-32 w-32 rounded-full object-cover"
+            />
+          </div>
+        )}
         <ImageUploader path="about" label="Drop a photo here" onUploaded={setPhotoUrl} />
       </div>
       {error && <p className="text-sm text-error">{error}</p>}

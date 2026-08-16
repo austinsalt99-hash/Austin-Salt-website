@@ -14,10 +14,10 @@ export default async function Home() {
     <main>
       <Hero />
       <section className="mx-auto grid max-w-4xl grid-cols-1 gap-4 px-6 pb-20 sm:grid-cols-2">
-        <SectionTile href="/projects" label="Projects" coverUrl={settings?.projects_cover_url} />
-        <SectionTile href="/achievements" label="Achievements" coverUrl={settings?.achievements_cover_url} />
-        <SectionTile href="/about" label="About" coverUrl={settings?.about_cover_url} />
-        <SectionTile href="/experience" label="Experience" coverUrl={settings?.experience_cover_url} />
+        <SectionTile href="/projects" label="Projects" coverUrl={settings?.projects_cover_url} index={0} />
+        <SectionTile href="/achievements" label="Achievements" coverUrl={settings?.achievements_cover_url} index={1} />
+        <SectionTile href="/about" label="About" coverUrl={settings?.about_cover_url} index={2} />
+        <SectionTile href="/experience" label="Experience" coverUrl={settings?.experience_cover_url} index={3} />
       </section>
     </main>
   );

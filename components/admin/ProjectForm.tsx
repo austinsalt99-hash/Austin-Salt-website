@@ -6,16 +6,20 @@ import { slugify, uniqueSlug } from "@/lib/slug";
 import { createRecord, updateRecord, listOrdered } from "@/lib/data/collections";
 import { createClient } from "@/lib/supabase/client";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { MediaPreview } from "@/components/admin/MediaPreview";
+import { SortableList } from "@/components/admin/SortableList";
 import { SectionsRepeater } from "@/components/admin/SectionsRepeater";
 import type { SectionDraft } from "@/lib/sectionsReducer";
 import type { Project } from "@/lib/types";
+
+export type GalleryItemDraft = { id: string; url: string };
 
 export type ProjectFormInitialData = {
   id: string;
   title: string;
   description: string;
   coverPhotoUrl: string;
-  galleryUrls: string[];
+  galleryItems: GalleryItemDraft[];
   sections: SectionDraft[];
 };
 
@@ -24,10 +28,18 @@ export function ProjectForm({ initialData }: { initialData?: ProjectFormInitialD
   const [title, setTitle] = useState(initialData?.title ?? "");
   const [description, setDescription] = useState(initialData?.description ?? "");
   const [coverPhotoUrl, setCoverPhotoUrl] = useState(initialData?.coverPhotoUrl ?? "");
-  const [galleryUrls, setGalleryUrls] = useState<string[]>(initialData?.galleryUrls ?? []);
+  const [galleryItems, setGalleryItems] = useState<GalleryItemDraft[]>(initialData?.galleryItems ?? []);
   const [sections, setSections] = useState<SectionDraft[]>(initialData?.sections ?? []);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  function handleGalleryReorder(orderedIds: string[]) {
+    setGalleryItems((prev) => orderedIds.map((id) => prev.find((item) => item.id === id)!));
+  }
+
+  function handleGalleryRemove(id: string) {
+    setGalleryItems((prev) => prev.filter((item) => item.id !== id));
+  }
 
   async function handleSave() {
     setSaving(true);
@@ -68,12 +80,12 @@ export function ProjectForm({ initialData }: { initialData?: ProjectFormInitialD
         projectId = created.id as string;
       }
 
-      if (galleryUrls.length > 0) {
+      if (galleryItems.length > 0) {
         const { error: insertGalleryError } = await supabase.from("project_gallery_items").insert(
-          galleryUrls.map((url, i) => ({
+          galleryItems.map((item, i) => ({
             project_id: projectId,
-            media_url: url,
-            media_type: url.match(/\.(mp4|mov|webm)$/i) ? "video" : "image",
+            media_url: item.url,
+            media_type: item.url.match(/\.(mp4|mov|webm)$/i) ? "video" : "image",
             position: i,
           }))
         );
@@ -122,21 +134,45 @@ export function ProjectForm({ initialData }: { initialData?: ProjectFormInitialD
 
       <div>
         <p className="mb-2 text-sm font-medium text-brown-600">Cover photo</p>
-        {coverPhotoUrl && <img src={coverPhotoUrl} alt="" className="mb-2 h-32 w-auto rounded-lg object-cover" />}
+        {coverPhotoUrl && (
+          <div className="mb-2">
+            <MediaPreview src={coverPhotoUrl} onRemove={() => setCoverPhotoUrl("")} />
+          </div>
+        )}
         <ImageUploader path="projects/covers" label="Drop a cover photo here" onUploaded={setCoverPhotoUrl} />
       </div>
 
       <div>
         <p className="mb-2 text-sm font-medium text-brown-600">Gallery</p>
-        <div className="mb-2 flex flex-wrap gap-2">
-          {galleryUrls.map((url) => (
-            <img key={url} src={url} alt="" className="h-20 w-20 rounded-lg object-cover" />
-          ))}
-        </div>
+        {galleryItems.length > 0 && (
+          <SortableList
+            items={galleryItems}
+            onReorder={handleGalleryReorder}
+            className="mb-2 flex flex-wrap gap-3"
+            renderItem={(item, dragHandle) => (
+              <div className="relative">
+                <button
+                  type="button"
+                  {...dragHandle.attributes}
+                  {...dragHandle.listeners}
+                  aria-label="Drag to reorder"
+                  className="absolute -left-2 -top-2 flex h-6 w-6 cursor-grab items-center justify-center rounded-full bg-brown-900 text-xs text-cream shadow"
+                >
+                  ⠿
+                </button>
+                <MediaPreview
+                  src={item.url}
+                  onRemove={() => handleGalleryRemove(item.id)}
+                  imgClassName="h-20 w-20 rounded-lg object-cover"
+                />
+              </div>
+            )}
+          />
+        )}
         <ImageUploader
           path="projects/gallery"
           label="Drop photos or videos here"
-          onUploaded={(url) => setGalleryUrls((prev) => [...prev, url])}
+          onUploaded={(url) => setGalleryItems((prev) => [...prev, { id: crypto.randomUUID(), url }])}
         />
       </div>
 

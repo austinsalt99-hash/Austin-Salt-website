@@ -31,7 +31,7 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
           title: project.title,
           description: project.description ?? "",
           coverPhotoUrl: project.cover_photo_url ?? "",
-          galleryUrls: (gallery ?? []).map((g) => g.media_url),
+          galleryItems: (gallery ?? []).map((g) => ({ id: g.id, url: g.media_url })),
           sections: (sections ?? []).map((s) => ({ id: s.id, title: s.title, description: s.description ?? "" })),
         }}
       />

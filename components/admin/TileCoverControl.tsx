@@ -15,16 +15,18 @@ type CoverColumn =
 export function TileCoverControl({
   settingsId,
   column,
+  coverUrl,
 }: {
   settingsId: string;
   column: CoverColumn;
+  coverUrl: string | null;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleUploaded(url: string) {
+  async function save(url: string | null) {
     setSaving(true);
     setError(null);
     try {
@@ -45,20 +47,32 @@ export function TileCoverControl({
 
   if (!open) {
     return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        disabled={saving}
-        className="rounded-full bg-cream/90 px-3 py-1 text-xs font-medium text-brown-900 shadow"
-      >
-        {saving ? "Saving…" : "Change cover"}
-      </button>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          disabled={saving}
+          className="rounded-full bg-cream/90 px-3 py-1 text-xs font-medium text-brown-900 shadow"
+        >
+          {saving ? "Saving…" : coverUrl ? "Change cover" : "Add cover"}
+        </button>
+        {coverUrl && (
+          <button
+            type="button"
+            onClick={() => save(null)}
+            disabled={saving}
+            className="rounded-full bg-cream/90 px-3 py-1 text-xs font-medium text-error shadow"
+          >
+            Remove
+          </button>
+        )}
+      </div>
     );
   }
 
   return (
     <div className="w-56 rounded-lg bg-cream p-2 shadow-lg">
-      <ImageUploader path="homepage" label="Drop a cover photo" onUploaded={handleUploaded} />
+      <ImageUploader path="homepage" label="Drop a cover photo" onUploaded={save} />
       {error && <p className="mt-1 text-xs text-error">{error}</p>}
     </div>
   );

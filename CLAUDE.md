@@ -42,9 +42,9 @@ No E2E test runner is configured — Vitest + Testing Library (jsdom) only. Test
 
 ## Design system constraints
 
-Defined in `app/globals.css` as Tailwind v4 `@theme` custom properties, with dark-mode overrides under `prefers-color-scheme`:
+Defined in `app/globals.css` as Tailwind v4 `@theme` custom properties. Light-only — there is no dark mode.
 
-- Palette: `cream`, `beige`, `brown-900` (ink), `brown-600` (secondary text), `stone-500` (muted/border), `accent` (rust-orange), `error`. **No green. Never use Tailwind default palette colors (e.g. `red-600`) — `error` is the only sanctioned red/danger token.**
+- Palette: `cream`, `beige`, `brown-900` (charcoal ink), `brown-600` (secondary text), `stone-500` (muted/border), `accent` (charcoal-blue), `error`. **No green. Never use Tailwind default palette colors (e.g. `red-600` or `blue-600`) — use the `accent`/`error` tokens instead.**
 - Typography: Inter only, everywhere. Hierarchy comes from weight/spacing, not a second typeface.
 - No literal engineering/blueprint/wireframe graphic motifs — the palette and type carry the tone.
 - Nav is minimal on every page (name/logo linking home + a Contact button) — don't add extra nav links; the homepage's four hero tiles are the primary navigation.

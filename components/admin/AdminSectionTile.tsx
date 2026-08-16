@@ -37,7 +37,7 @@ export function AdminSectionTile({
         }
       />
       <div className="relative flex justify-end">
-        <TileCoverControl settingsId={settingsId} column={column} />
+        <TileCoverControl settingsId={settingsId} column={column} coverUrl={coverUrl} />
       </div>
       <Link href={href} className="relative text-2xl font-semibold text-cream underline-offset-4 hover:underline">
         {label}
