@@ -50,10 +50,10 @@ export function Hero() {
         className="relative shrink-0"
       >
         <Image
-          src="/images/hero/austin.png"
+          src="/images/hero/austin-portrait-2.png"
           alt="Austin Salt"
-          width={874}
-          height={1165}
+          width={1064}
+          height={1517}
           priority
           className="mx-auto h-[340px] w-auto object-contain sm:h-[540px] md:h-[640px] lg:h-[720px]"
           style={{

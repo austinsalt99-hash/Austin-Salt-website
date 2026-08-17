@@ -47,7 +47,7 @@ Defined in `app/globals.css` as Tailwind v4 `@theme` custom properties. Light-on
 - Palette: `cream`, `beige`, `brown-900` (charcoal ink), `brown-600` (secondary text), `stone-500` (muted/border), `accent` (charcoal-blue), `error`. **No green. Never use Tailwind default palette colors (e.g. `red-600` or `blue-600`) — use the `accent`/`error` tokens instead.**
 - Typography: Inter only, everywhere. Hierarchy comes from weight/spacing, not a second typeface.
 - No literal engineering/blueprint/wireframe graphic motifs — the palette and type carry the tone.
-- Nav is minimal on every page (name/logo linking home + a Contact button) — don't add extra nav links; the homepage's four hero tiles are the primary navigation.
+- Nav (`components/Nav.tsx`) links to every top-level section (Projects, Achievements, About, Experience) plus a Contact button, so any page is one click from any other — not just name/logo + Contact. Collapses to a hamburger menu below `sm`. The homepage's four hero tiles remain the primary entry point for first-time visitors, but the nav is the persistent way to jump around once you're on a subpage.
 
 Full rationale: `docs/superpowers/specs/2026-07-17-portfolio-site-design.md`. Business cards are an explicitly separate, out-of-scope spec (`docs/superpowers/specs/2026-07-17-business-card-design.md`) — don't fold that work into portfolio-site changes.
 

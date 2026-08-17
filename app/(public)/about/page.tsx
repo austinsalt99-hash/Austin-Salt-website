@@ -7,12 +7,15 @@ export default async function AboutPage() {
   const { data: about } = await supabase.from("about").select("*").single<About>();
 
   return (
-    <main className="px-6 py-24">
-      {about ? (
-        <AboutView about={about} />
-      ) : (
-        <p className="text-center text-brown-600">This section is under construction — check back soon.</p>
-      )}
+    <main className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
+      <h1 className="text-3xl font-semibold text-brown-900">About</h1>
+      <div className="mt-10">
+        {about ? (
+          <AboutView about={about} />
+        ) : (
+          <p className="text-center text-brown-600">This section is under construction — check back soon.</p>
+        )}
+      </div>
     </main>
   );
 }

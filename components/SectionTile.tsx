@@ -41,7 +41,7 @@ export function SectionTile({
         ref={linkRef}
         href={href}
         onNavigate={handleNavigate}
-        className="group relative flex h-56 items-end overflow-hidden rounded-2xl p-6 transition-transform duration-300 ease-out hover:scale-[1.03]"
+        className="group relative flex h-64 items-end overflow-hidden rounded-2xl p-6 transition-transform duration-300 ease-out hover:scale-[1.03] sm:h-72 sm:p-8 lg:h-80 xl:h-96"
         style={
           coverUrl
             ? { backgroundImage: `url(${coverUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
@@ -55,7 +55,7 @@ export function SectionTile({
               : "absolute inset-0 bg-gradient-to-br from-brown-600 to-brown-900"
           }
         />
-        <span className="relative z-10 text-2xl font-semibold text-cream">{label}</span>
+        <span className="relative z-10 text-2xl font-semibold text-cream sm:text-3xl">{label}</span>
       </Link>
     </motion.div>
   );
