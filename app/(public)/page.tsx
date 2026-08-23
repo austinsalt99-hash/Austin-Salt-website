@@ -3,7 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Hero } from "@/components/Hero";
 import { SectionTile } from "@/components/SectionTile";
-import type { HomepageSettings } from "@/lib/types";
+import type { About, HomepageSettings } from "@/lib/types";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -11,6 +11,7 @@ export default async function Home() {
     .from("homepage_settings")
     .select("*")
     .single<HomepageSettings>();
+  const { data: about } = await supabase.from("about").select("resume_url").single<Pick<About, "resume_url">>();
 
   return (
     <main>
@@ -28,6 +29,29 @@ export default async function Home() {
           <SectionTile href="/experience" label="Experience" coverUrl={settings?.experience_cover_url} index={3} />
         </div>
       </section>
+
+      {about?.resume_url && (
+        <section className="mx-auto max-w-[1600px] px-6 pb-16 sm:px-10">
+          <div className="flex items-center gap-4">
+            <span aria-hidden className="h-px flex-1 bg-stone-500/40" />
+            <h2 className="shrink-0 text-2xl font-semibold text-brown-900 sm:text-3xl">Resume</h2>
+            <span aria-hidden className="h-px flex-1 bg-stone-500/40" />
+          </div>
+          <div className="mt-5 flex justify-center">
+            <a
+              href={about.resume_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 rounded-full bg-accent px-10 py-5 text-lg font-medium text-cream transition-transform duration-300 hover:scale-[1.03]"
+            >
+              View Resume
+              <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
+                →
+              </span>
+            </a>
+          </div>
+        </section>
+      )}
 
       <section className="mx-auto max-w-[1600px] px-6 pb-24 sm:px-10">
         <div className="flex items-center gap-4">

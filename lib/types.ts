@@ -48,6 +48,7 @@ export type About = {
   id: string;
   photo_url: string | null;
   bio: string | null;
+  resume_url: string | null;
   updated_at: string;
 };
 

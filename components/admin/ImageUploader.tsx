@@ -7,10 +7,12 @@ export function ImageUploader({
   path,
   onUploaded,
   label,
+  accept = "image/*,video/*",
 }: {
   path: string;
   onUploaded: (url: string) => void;
   label: string;
+  accept?: string;
 }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +49,7 @@ export function ImageUploader({
         {uploading ? "Uploading…" : label}
         <input
           type="file"
-          accept="image/*,video/*"
+          accept={accept}
           multiple
           className="hidden"
           onChange={(e) => handleFiles(e.target.files)}

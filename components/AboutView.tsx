@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { About } from "@/lib/types";
 
 export function AboutView({ about, editHref }: { about: About; editHref?: string }) {
-  const photoSrc = about.photo_url ?? "/images/about/austin-engine.jpg";
+  const photoSrc = about.photo_url || "/images/about/austin-engine.jpg";
 
   return (
     <div className="grid grid-cols-1 items-center gap-10 sm:grid-cols-2 sm:gap-14">

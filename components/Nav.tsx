@@ -22,8 +22,23 @@ export function Nav() {
   return (
     <header className="relative px-6 py-4 sm:px-10">
       <div className="flex items-center justify-between">
-        <Link href="/" className="text-lg font-semibold text-brown-900">
-          Austin Salt
+        <Link
+          href="/"
+          aria-label="Home"
+          className="group relative isolate -ml-4 overflow-hidden rounded-full px-4 py-2 text-lg font-semibold outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        >
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-brown-900 transition-transform duration-300 ease-out group-hover:scale-y-100"
+          />
+          <span aria-hidden="true" className="relative z-10 grid">
+            <span className="col-start-1 row-start-1 text-brown-900 transition-opacity duration-200 group-hover:opacity-0">
+              Austin Salt
+            </span>
+            <span className="col-start-1 row-start-1 text-cream opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              Home page
+            </span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-1 rounded-full bg-beige p-1 sm:flex" aria-label="Primary">
