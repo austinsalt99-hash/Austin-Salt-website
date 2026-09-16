@@ -8,7 +8,7 @@ const SECTIONS = [
   { href: "/projects", label: "Projects" },
   { href: "/achievements", label: "Achievements" },
   { href: "/about", label: "About" },
-  { href: "/experience", label: "Experience" },
+  { href: "/experience", label: "Experience & Skills" },
 ];
 
 function isActive(pathname: string, href: string) {

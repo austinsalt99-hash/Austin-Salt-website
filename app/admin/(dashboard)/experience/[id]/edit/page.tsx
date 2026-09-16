@@ -1,11 +1,17 @@
 import { createClient } from "@/lib/supabase/server";
 import { ExperienceForm } from "@/components/admin/ExperienceForm";
-import type { ExperienceEntry } from "@/lib/types";
+import type { ExperienceEntry, ExperienceGalleryItem } from "@/lib/types";
 
 export default async function EditExperiencePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
   const { data: entry } = await supabase.from("experience").select("*").eq("id", id).single<ExperienceEntry>();
+  const { data: galleryItems } = await supabase
+    .from("experience_gallery_items")
+    .select("*")
+    .eq("experience_id", id)
+    .order("position")
+    .returns<ExperienceGalleryItem[]>();
 
   if (!entry) return <p className="text-brown-600">Experience entry not found.</p>;
 
@@ -19,7 +25,7 @@ export default async function EditExperiencePage({ params }: { params: Promise<{
           organization: entry.organization,
           dateRange: entry.date_range ?? "",
           description: entry.description ?? "",
-          imageUrl: entry.image_url ?? "",
+          galleryItems: (galleryItems ?? []).map((item) => ({ id: item.id, url: item.media_url })),
         }}
       />
     </div>

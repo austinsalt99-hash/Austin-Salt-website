@@ -26,7 +26,7 @@ export default async function Home() {
           <SectionTile href="/projects" label="Projects" coverUrl={settings?.projects_cover_url} index={0} />
           <SectionTile href="/achievements" label="Achievements" coverUrl={settings?.achievements_cover_url} index={1} />
           <SectionTile href="/about" label="About" coverUrl={settings?.about_cover_url} index={2} />
-          <SectionTile href="/experience" label="Experience" coverUrl={settings?.experience_cover_url} index={3} />
+          <SectionTile href="/experience" label="Experience & Skills" coverUrl={settings?.experience_cover_url} index={3} />
         </div>
       </section>
 

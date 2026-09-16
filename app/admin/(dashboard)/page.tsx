@@ -40,7 +40,7 @@ export default async function AdminHome() {
         />
         <AdminSectionTile
           href="/admin/experience"
-          label="Experience"
+          label="Experience & Skills"
           coverUrl={settings.experience_cover_url}
           settingsId={settings.id}
           column="experience_cover_url"

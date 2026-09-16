@@ -1,9 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { ProjectGalleryItem } from "@/lib/types";
 
-export function Gallery({ items }: { items: ProjectGalleryItem[] }) {
+type GalleryItem = {
+  id: string;
+  media_url: string;
+  media_type: "image" | "video";
+};
+
+export function Gallery({
+  items,
+  trigger,
+}: {
+  items: GalleryItem[];
+  trigger?: (open: () => void) => React.ReactNode;
+}) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const close = useCallback(() => setActiveIndex(null), []);
@@ -36,34 +47,38 @@ export function Gallery({ items }: { items: ProjectGalleryItem[] }) {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {items.map((item, index) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => setActiveIndex(index)}
-            className="group relative aspect-square overflow-hidden rounded-lg"
-          >
-            {item.media_type === "video" ? (
-              <>
-                <video src={item.media_url} muted playsInline className="h-full w-full object-cover" />
-                <span className="absolute inset-0 flex items-center justify-center bg-brown-900/20 transition-colors group-hover:bg-brown-900/30">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-cream/90 text-brown-900">
-                    ▶
+      {trigger ? (
+        trigger(() => setActiveIndex(0))
+      ) : (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {items.map((item, index) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => setActiveIndex(index)}
+              className="group relative aspect-square overflow-hidden rounded-lg"
+            >
+              {item.media_type === "video" ? (
+                <>
+                  <video src={item.media_url} muted playsInline className="h-full w-full object-cover" />
+                  <span className="absolute inset-0 flex items-center justify-center bg-brown-900/20 transition-colors group-hover:bg-brown-900/30">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-cream/90 text-brown-900">
+                      ▶
+                    </span>
                   </span>
-                </span>
-              </>
-            ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={item.media_url}
-                alt=""
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            )}
-          </button>
-        ))}
-      </div>
+                </>
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={item.media_url}
+                  alt=""
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
 
       {active && (
         <div

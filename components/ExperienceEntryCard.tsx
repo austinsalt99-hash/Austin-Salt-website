@@ -1,10 +1,13 @@
-import type { ExperienceEntry } from "@/lib/types";
+import { Gallery } from "@/components/Gallery";
+import type { ExperienceEntry, ExperienceGalleryItem } from "@/lib/types";
 
 export function ExperienceEntryCard({
   entry,
+  galleryItems = [],
   adminControls,
 }: {
   entry: ExperienceEntry;
+  galleryItems?: ExperienceGalleryItem[];
   adminControls?: React.ReactNode;
 }) {
   return (
@@ -16,10 +19,21 @@ export function ExperienceEntryCard({
         </div>
         {entry.date_range && <p className="text-sm text-stone-500">{entry.date_range}</p>}
       </div>
-      {entry.image_url && (
-        <img src={entry.image_url} alt="" className="mt-2 h-40 w-full max-w-sm rounded-lg object-cover" />
-      )}
       {entry.description && <p className="text-sm text-brown-600">{entry.description}</p>}
+      {galleryItems.length > 0 && (
+        <Gallery
+          items={galleryItems}
+          trigger={(open) => (
+            <button
+              type="button"
+              onClick={open}
+              className="mt-1 self-start rounded-full border border-brown-600/40 px-4 py-1.5 text-sm font-medium text-brown-600 transition-colors hover:bg-beige"
+            >
+              View Gallery ({galleryItems.length})
+            </button>
+          )}
+        />
+      )}
       {adminControls && <div className="mt-2 border-t border-beige pt-2">{adminControls}</div>}
     </div>
   );

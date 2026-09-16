@@ -39,9 +39,16 @@ export type ExperienceEntry = {
   organization: string;
   date_range: string | null;
   description: string | null;
-  image_url: string | null;
   position: number;
   created_at: string;
+};
+
+export type ExperienceGalleryItem = {
+  id: string;
+  experience_id: string;
+  media_url: string;
+  media_type: "image" | "video";
+  position: number;
 };
 
 export type About = {
