@@ -33,6 +33,22 @@ export type Achievement = {
   created_at: string;
 };
 
+export type AchievementGalleryItem = {
+  id: string;
+  achievement_id: string;
+  media_url: string;
+  media_type: "image" | "video";
+  position: number;
+};
+
+export type AchievementSection = {
+  id: string;
+  achievement_id: string;
+  title: string;
+  description: string | null;
+  position: number;
+};
+
 export type ExperienceEntry = {
   id: string;
   role: string;

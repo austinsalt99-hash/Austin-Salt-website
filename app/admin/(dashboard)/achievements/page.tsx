@@ -3,26 +3,62 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { listOrdered, deleteRecord, reorder } from "@/lib/data/collections";
+import { createClient } from "@/lib/supabase/client";
 import { SortableList } from "@/components/admin/SortableList";
 import { EntryControls } from "@/components/admin/EntryControls";
 import { AchievementCard } from "@/components/AchievementCard";
-import type { Achievement } from "@/lib/types";
+import type { Achievement, AchievementGalleryItem, AchievementSection } from "@/lib/types";
 
 export default function AdminAchievementsPage() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [galleryByAchievement, setGalleryByAchievement] = useState<Map<string, AchievementGalleryItem[]>>(new Map());
+  const [sectionsByAchievement, setSectionsByAchievement] = useState<Map<string, AchievementSection[]>>(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    listOrdered<Achievement>("achievements").then((data) => {
-      setAchievements(data);
-      setLoading(false);
-    });
+    refetch().then(() => setLoading(false));
   }, []);
 
   async function refetch() {
     const data = await listOrdered<Achievement>("achievements");
     setAchievements(data);
+
+    const supabase = createClient();
+    const achievementIds = data.map((achievement) => achievement.id);
+    const { data: galleryItems } = data.length
+      ? await supabase
+          .from("achievement_gallery_items")
+          .select("*")
+          .in("achievement_id", achievementIds)
+          .order("position")
+          .returns<AchievementGalleryItem[]>()
+      : { data: [] as AchievementGalleryItem[] };
+
+    const grouped = new Map<string, AchievementGalleryItem[]>();
+    for (const item of galleryItems ?? []) {
+      const list = grouped.get(item.achievement_id) ?? [];
+      list.push(item);
+      grouped.set(item.achievement_id, list);
+    }
+    setGalleryByAchievement(grouped);
+
+    const { data: sections } = data.length
+      ? await supabase
+          .from("achievement_sections")
+          .select("*")
+          .in("achievement_id", achievementIds)
+          .order("position")
+          .returns<AchievementSection[]>()
+      : { data: [] as AchievementSection[] };
+
+    const groupedSections = new Map<string, AchievementSection[]>();
+    for (const section of sections ?? []) {
+      const list = groupedSections.get(section.achievement_id) ?? [];
+      list.push(section);
+      groupedSections.set(section.achievement_id, list);
+    }
+    setSectionsByAchievement(groupedSections);
   }
 
   async function handleDelete(id: string) {
@@ -72,6 +108,8 @@ export default function AdminAchievementsPage() {
           renderItem={(achievement, dragHandle) => (
             <AchievementCard
               achievement={achievement}
+              galleryItems={galleryByAchievement.get(achievement.id)}
+              sections={sectionsByAchievement.get(achievement.id)}
               adminControls={
                 <EntryControls
                   editHref={`/admin/achievements/${achievement.id}/edit`}
